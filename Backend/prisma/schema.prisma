@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+  user String
+  password String
+  email String
+  exhibits Exhibit[]
+}
+
+model Exhibit{
+  id String @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name     String   @db.VarChar(255)
+  description String? 
+  pieces Piece[]
+  owner User@relation(fields: [ownerID], references: [id])
+  ownerID String
+}
+
+model Piece {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name String
+  author String
+  image String
+  exhibition Exhibit@relation(fields: [exhibitionId], references: [id])
+  exhibitionId String
+}
