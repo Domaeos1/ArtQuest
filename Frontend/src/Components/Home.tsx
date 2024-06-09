@@ -1,10 +1,16 @@
-import React from "react";
 import { clearExhibitionsFromLocalStorage } from "../utils/exhibitionStorage";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import artInstituteOfChicagoImage from "../assets/wide_med_art-institute-of-chicago-01-2.jpg";
 import metMuseumImage from "../assets/metmuseum-1200x630.webp";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+  let navigate = useNavigate();
+
+  function handleClick(apiName: string) {
+    navigate(`/${apiName}`);
+  }
+
   return (
     <div>
       <button
@@ -43,8 +49,12 @@ export default function Home() {
                   in the world.{" "}
                 </Card.Text>
               </Card.Body>
-              <Button className="w-100 rounded-0" variant="primary">
-                View
+              <Button
+                onClick={() => handleClick("metmuseum")}
+                className="w-100 rounded-0"
+                variant="primary"
+              >
+                Browse
               </Button>
             </Card>
           </Col>
@@ -65,8 +75,12 @@ export default function Home() {
                   of 1893.
                 </Card.Text>
               </Card.Body>
-              <Button className="w-100 rounded-0" variant="primary">
-                View
+              <Button
+                onClick={() => handleClick("chichagoart")}
+                className="w-100 rounded-0"
+                variant="primary"
+              >
+                Browse
               </Button>
             </Card>
           </Col>

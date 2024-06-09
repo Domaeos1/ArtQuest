@@ -49,20 +49,18 @@ export default function Exhibitions() {
         <Row className="mt-4">
           {exhibitions.map((exhibition, index) => (
             <Col key={index} xs={12} sm={6} md={4} className="mb-4">
-              <Card className="rounded-0">
+              <Card className="rounded-0 rounded-top-2 shadow-sm">
                 <Card.Body>
                   <Card.Title>{exhibition.name}</Card.Title>
                   <Card.Text>{exhibition.description}</Card.Text>
                 </Card.Body>
               </Card>
-              <div className="d-flex  justify-content-evenly">
-                <Button className="w-75 rounded-0" variant="secondary">
-                  View exhibition
-                </Button>
-                <Button className="rounded-0" variant="danger">
-                  Delete
-                </Button>
-              </div>
+              <Button className="w-75 rounded-0" variant="secondary">
+                View exhibition
+              </Button>
+              <Button className="w-25 rounded-0" variant="danger">
+                Delete
+              </Button>
             </Col>
           ))}
         </Row>
@@ -80,7 +78,7 @@ export default function Exhibitions() {
             <Form.Group controlId="formExhibitionName">
               <Form.Label>Exhibition Name</Form.Label>
               <Form.Control
-              className="mb-2"
+                className="mb-2"
                 type="text"
                 placeholder="Enter name"
                 value={exhibitionName}

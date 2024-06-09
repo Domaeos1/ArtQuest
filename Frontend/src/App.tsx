@@ -6,6 +6,7 @@ import Collections from "./Components/Collections";
 import Exhibitions from "./Components/Exhibitions";
 import { getExhibitionsFromLocalStorage } from "./utils/exhibitionStorage";
 import ExhibitionCard from "./Components/ExhibitionCard";
+import ArtList from "./Components/ArtList";
 
 interface Exhibition {
   name: string;
@@ -22,7 +23,9 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/collections" element={<Collections />} />
-        <Route path="/exhibitions" element={<Exhibitions />} />
+        <Route path="/exhibitions" element={<Exhibitions   />} />
+        <Route path={"/metmuseum"} element={<ArtList />} />
+        <Route path={"chichagoart"} element={<ArtList />} />
         {exhibitions.map((exhibition, index) => (
           <Route
             key={index}
