@@ -1,6 +1,7 @@
 interface Exhibition {
   name: string;
   path: string;
+  description: string;
 }
 
 export const getExhibitionsFromLocalStorage = (): Exhibition[] => {
