@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import { NavLink } from "react-router-dom";
 
 const NavBar: React.FC = () => {
   return (
@@ -17,9 +18,15 @@ const NavBar: React.FC = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/collections">Collections</Nav.Link>
-            <Nav.Link href="/exhibitions">Exhibitions</Nav.Link>
+            <Nav.Link as={NavLink} to="/">
+              Home
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/collections">
+              Collections
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/exhibitions">
+              Exhibitions
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
