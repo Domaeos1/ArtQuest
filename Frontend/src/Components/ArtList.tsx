@@ -1,16 +1,12 @@
-import { Container, Form, Row, Col, Button } from "react-bootstrap";
+import { Container, Form, Row, Col, Button, Card } from "react-bootstrap";
 
 import { useEffect, useState } from "react";
-import {
-  fetchMetMuseumArt,
-  fetchMetMuseumArtById,
-} from "../utils/fetchApiData";
+import { fetchClevelandApiData } from "../utils/fetchApiData";
 
 export default function ArtList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchOption, setSearchOption] = useState("Artist");
-  const [ids, setIDs] = useState([]);
-  const [artData, setArtData] = useState({});
+  const [artData, setArtData] = useState([]);
 
   const handleSearch = (e, searchTerm, searchOption) => {
     e.preventDefault();
@@ -19,61 +15,88 @@ export default function ArtList() {
   };
   useEffect(() => {
     const fetchData = async () => {
-      const getIds = await fetchMetMuseumArt();
-      console.log("====================================");
-      console.log(getIds);
-      console.log("====================================");
-      const promiseArray = getIds.objectIDs
-        .slice(0, 10)
-        .map(async (id: string) => {
-          try {
-            const artObject = await fetchMetMuseumArtById(id);
-            console.log("Fetched art object:", artObject);
-            return artObject;
-          } catch (error) {
-            console.error(error);
-            return null; // Return null for failed fetches
-          }
-        });
-      const results = await Promise.all(promiseArray);
-      console.log("====================================");
-      console.log(results);
-      console.log("====================================");
+      try {
+        const response = await fetchClevelandApiData();
+        setArtData(response.data.data);
+      } catch (error) {
+        console.error("Error fetching artwork data", error);
+      }
     };
+
     fetchData();
   }, []);
 
-  useEffect(() => {
-    // console.log(ids);
-  }, []);
+  interface Artwork {
+    title: string;
+    creation_date: string;
+    department: string;
+    culture: string;
+    technique: string;
+    creators: [];
+    images: {};
+  }
 
   return (
-    <Container className="mt-4">
-      <Form onSubmit={(e) => handleSearch(e, searchTerm, searchOption)}>
-        <Row>
-          <Col xs="auto" className="w-50">
-            <Form.Control
-              type="text"
-              placeholder="Search"
-              className="mr-sm-2"
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </Col>
-          <Col xs="auto" className="w-25">
-            <Form.Select
-              value={searchOption}
-              onChange={(e) => setSearchOption(e.target.value)}
-            >
-              <option value="Artist">Artist</option>
-              <option value="Title">Title</option>
-              <option value="Location">Location</option>
-            </Form.Select>
-          </Col>
-          <Col xs="auto">
-            <Button type="submit">Submit</Button>
-          </Col>
+    <>
+      <Container className="mt-4">
+        <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
+          The Cleveland Museum of Art
+        </h1>
+
+        <Form onSubmit={(e) => handleSearch(e, searchTerm, searchOption)}>
+          <Row className="justify-content-center">
+            <Col xs="6" md="6">
+              <Form.Control
+                type="text"
+                placeholder="Search"
+                className="mr-sm-2"
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </Col>
+            <Col xs="auto">
+              <Form.Select
+                value={searchOption}
+                onChange={(e) => setSearchOption(e.target.value)}
+              >
+                <option value="Title">Title</option>
+                <option value="Artist">Artist</option>
+                <option value="Location">Location</option>
+              </Form.Select>
+            </Col>
+            <Col xs="auto">
+              <Button type="submit">Submit</Button>
+            </Col>
+          </Row>
+        </Form>
+
+        <Row className="mt-4">
+          {artData.map((artwork: Artwork, index) => (
+            <Col key={index} sm={12} md={6} lg={4} className="mb-4">
+              <Card>
+                <Card.Img
+                  variant="top"
+                  src={artwork.images.web.url}
+                  alt={artwork.title}
+                />
+                <Card.Body>
+                  <Card.Title>{artwork.title}</Card.Title>
+                  <Card.Text>
+                    <strong>Creation Date:</strong> {artwork.creation_date}{" "}
+                    <br />
+                    <strong>Department:</strong> {artwork.department} <br />
+                    <strong>Culture:</strong> {artwork.culture} <br />
+                    <strong>Technique:</strong> {artwork.technique} <br />
+                    <strong>Creators:</strong>{" "}
+                    {artwork.creators
+                      .map((creator) => creator.description)
+                      .join(", ")}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
         </Row>
-      </Form>
-    </Container>
+      </Container>
+    </>
   );
 }
