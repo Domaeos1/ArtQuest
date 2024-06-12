@@ -2,6 +2,7 @@ import { clearExhibitionsFromLocalStorage } from "../utils/exhibitionStorage";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import artInstituteOfChicagoImage from "../assets/wide_med_art-institute-of-chicago-01-2.jpg";
 import metMuseumImage from "../assets/metmuseum-1200x630.webp";
+import clevelandMuseumImage from "../assets/ClevelandMuseum_exterior.jpg";
 import { useNavigate } from "react-router-dom";
 
 export default function Home() {
@@ -36,21 +37,23 @@ export default function Home() {
             <Card className="h-100">
               <Card.Img
                 variant="top"
-                src={metMuseumImage}
+                src={clevelandMuseumImage}
                 className="img-fluid"
                 style={{ height: "200px", objectFit: "cover" }}
               />
               <Card.Body>
-                <Card.Title>The Met Museum</Card.Title>
+                <Card.Title>Cleveland Museum of Art</Card.Title>
                 <Card.Text>
-                  The Metropolitan Museum of Art, colloquially referred to as
-                  the Met, is an encyclopedic art museum in New York City. It is
-                  the largest art museum in the Americas and the fourth-largest
-                  in the world.{" "}
+                  The Cleveland Museum of Art, established in 1913, is a
+                  distinguished art museum located in Cleveland, Ohio. Renowned
+                  for its diverse and comprehensive collection, the museum
+                  features over 61,000 artworks from various cultures and time
+                  periods. Highlights include pieces by iconic artists such as
+                  Caravaggio, Monet, and Picasso.
                 </Card.Text>
               </Card.Body>
               <Button
-                onClick={() => handleClick("metmuseum")}
+                onClick={() => handleClick("clevelandmuseum")}
                 className="w-100 rounded-0"
                 variant="primary"
               >
@@ -69,10 +72,12 @@ export default function Home() {
               <Card.Body>
                 <Card.Title>Art Institute of Chicago</Card.Title>
                 <Card.Text>
-                  The Art Institute of Chicago is an architectural artifact that
-                  represents Chicago’s rich history of educating young artists
-                  and serves as a reminder of the World’s Columbian Exposition
-                  of 1893.
+                  The Chicago Art Institute, founded in 1879, is a premier art
+                  museum located in the heart of Chicago. It boasts an extensive
+                  collection of artwork from around the world, featuring
+                  masterpieces by artists such as Vincent van Gogh, Grant Wood,
+                  and Georges Seurat. Known for its rich educational programs
+                  and public engagement initiatives.
                 </Card.Text>
               </Card.Body>
               <Button
@@ -84,7 +89,6 @@ export default function Home() {
               </Button>
             </Card>
           </Col>
-          {/* Add more Col components with Cards here if needed */}
         </Row>
       </Container>
     </div>
