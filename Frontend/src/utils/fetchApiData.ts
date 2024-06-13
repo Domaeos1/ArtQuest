@@ -1,10 +1,11 @@
 import axios from "axios";
 
-export const fetchClevelandApiData = () => {
+export const fetchClevelandApiData = (page: number) => {
   const url = "https://openaccess-api.clevelandart.org/api/artworks";
+  const limit = 12;
   const params = {
-    skip: 10,
-    limit: 20,
+    skip: 8 + (page - 1) * limit, // Calculate skip based on page number
+    limit: limit,
     fields: "title,images,creation_date,department,culture,technique,creators",
     has_image: 1,
   };

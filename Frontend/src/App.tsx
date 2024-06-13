@@ -25,6 +25,7 @@ const App: React.FC = () => {
         <Route path="/collections" element={<Collections />} />
         <Route path="/exhibitions" element={<Exhibitions />} />
         <Route path={"/clevelandmuseum"} element={<ArtList />} />
+        <Route path={"/artwork/:artId"} element={<Collections />} />
         <Route path={"chichagoart"} element={<ArtList />} />
         {exhibitions.map((exhibition, index) => (
           <Route

@@ -14,9 +14,9 @@ const NavBar: React.FC = () => {
       className="bg-body-tertiary"
     >
       <Container>
-        <Navbar.Brand href="/">ArtQuest</Navbar.Brand>
+        <Navbar.Brand className="fs-1" href="/">ArtQuest</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
+        <Navbar.Collapse className="fs-5" id="basic-navbar-nav">
           <Nav className="ms-auto">
             <Nav.Link as={NavLink} to="/">
               Home
