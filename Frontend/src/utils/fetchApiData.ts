@@ -6,7 +6,7 @@ export const fetchClevelandApiData = (page: number) => {
   const params = {
     skip: 8 + (page - 1) * limit, // Calculate skip based on page number
     limit: limit,
-    fields: "title,images,creation_date,department,culture,technique,creators",
+    // fields: "title,images,creation_date,department,culture,technique,creators",
     has_image: 1,
   };
 

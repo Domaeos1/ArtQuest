@@ -11,6 +11,7 @@ interface Artwork {
   technique: string;
   creators: { description: string }[];
   images: { web: { url: string } };
+  description: string;
 }
 
 const ArtList = () => {
@@ -83,7 +84,7 @@ const ArtList = () => {
 
       <Row className="mt-4">
         {artData.map((artwork: Artwork, index) => (
-          <Col key={index} sm={12} md={6} lg={4} className="mb-4">
+          <Col key={index} sm={12} md={6} lg={6} className="mb-4">
             <Card>
               <Card.Img
                 variant="top"
@@ -92,7 +93,7 @@ const ArtList = () => {
                 style={{ maxHeight: "500px", objectFit: "cover" }}
               />
               <Card.Body>
-                <Link to={`/artwork/${artwork.id}`}>
+                <Link className="text-decoration-none" to={artwork.url}>
                   <Card.Title>{artwork.title}</Card.Title>
                 </Link>
                 <Card.Text>
@@ -104,10 +105,10 @@ const ArtList = () => {
                   {artwork.creators
                     .map((creator) => creator.description)
                     .join(", ")}
+                  <p className="mt-2">{artwork.description}</p>
                 </Card.Text>
                 <Row>
                   <Col>
-                    {/* <Button variant="primary">View Details</Button>{" "} */}
                     <Button variant="secondary">Add to Collection</Button>{" "}
                     <Button variant="secondary">Add to Exhibition</Button>
                   </Col>
