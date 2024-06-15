@@ -12,51 +12,48 @@ interface Artwork {
   creators: { description: string }[];
   images: { web: { url: string } };
   description: string;
+  url: string;
 }
 
 const ArtList = () => {
   const [artData, setArtData] = useState<Artwork[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchOption, setSearchOption] = useState("Title");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchArtData = async (page: number) => {
+  const fetchArtData = async (page: number, searchTerm: string) => {
+    setIsLoading(true);
     try {
-      const response = await fetchClevelandApiData(page);
-      return response.data.data;
+      const response = await fetchClevelandApiData(page, searchTerm);
+      const data = response.data.data;
+      setArtData((prevData) => (page === 1 ? data : [...prevData, ...data]));
     } catch (error) {
       console.error("Error fetching artwork data", error);
-      return [];
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchArtData(currentPage);
-      setArtData((prevData) => [...prevData, ...data]); // Append new data to existing artData
-    };
-
-    fetchData();
+    fetchArtData(currentPage, searchTerm);
   }, [currentPage]);
 
-  const handleLoadMore = () => {
-    setCurrentPage(currentPage + 1);
-  };
-  const handleSearch = (
-    e: React.FormEvent<HTMLFormElement>,
-    searchTerm: string,
-    searchOption: string
-  ) => {
+  const handleLoadMore = () => setCurrentPage((prevPage) => prevPage + 1);
+
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle search logic here
-    console.log(`Searching for ${searchTerm} by ${searchOption}`);
+    if (searchTerm) {
+      setCurrentPage(1);
+
+      fetchArtData(1, searchTerm);
+    }
   };
   return (
     <Container className="mt-4">
       <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
         Cleveland Museum of Art
       </h1>
-      <Form onSubmit={(e) => handleSearch(e, searchTerm, searchOption)}>
+      <Form onSubmit={(e) => handleSearch(e)}>
         <Row className="justify-content-center">
           <Col xs="6" md="6">
             <Form.Control
@@ -67,21 +64,15 @@ const ArtList = () => {
             />
           </Col>
           <Col xs="auto">
-            <Form.Select
-              value={searchOption}
-              onChange={(e) => setSearchOption(e.target.value)}
-            >
-              <option value="Title">Title</option>
-              <option value="Artist">Artist</option>
-              <option value="Location">Location</option>
-            </Form.Select>
-          </Col>
-          <Col xs="auto">
             <Button type="submit">Submit</Button>
           </Col>
         </Row>
       </Form>
-
+      {artData.length === 0 && !isLoading && (
+        <h5 className="text-center">
+          No artwork was found for the search term "{searchTerm}"
+        </h5>
+      )}
       <Row className="mt-4">
         {artData.map((artwork: Artwork, index) => (
           <Col key={index} sm={12} md={6} lg={6} className="mb-4">
@@ -105,7 +96,11 @@ const ArtList = () => {
                   {artwork.creators
                     .map((creator) => creator.description)
                     .join(", ")}
-                  <p className="mt-2">{artwork.description}</p>
+                  {/* <p className="mt-2">{artwork.description}</p> */}
+                  <Card.Text
+                    className="mt-2"
+                    dangerouslySetInnerHTML={{ __html: artwork.description }}
+                  />
                 </Card.Text>
                 <Row>
                   <Col>
@@ -118,12 +113,19 @@ const ArtList = () => {
           </Col>
         ))}
       </Row>
-
-      <Row className="justify-content-center m-4">
-        <Button className="w-25" variant="primary" onClick={handleLoadMore}>
-          Load More
-        </Button>
-      </Row>
+      {isLoading && <h3>Loading data...</h3>}
+      {artData.length > 0 && (
+        <Row className="justify-content-center m-4">
+          <Button
+            disabled={isLoading}
+            className="w-25"
+            variant="primary"
+            onClick={handleLoadMore}
+          >
+            Load More
+          </Button>
+        </Row>
+      )}
     </Container>
   );
 };

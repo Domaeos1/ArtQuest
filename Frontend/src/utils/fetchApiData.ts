@@ -1,14 +1,18 @@
 import axios from "axios";
 
-export const fetchClevelandApiData = (page: number) => {
+export const fetchClevelandApiData = (page: number, query?: string) => {
   const url = "https://openaccess-api.clevelandart.org/api/artworks";
   const limit = 12;
-  const params = {
+  const params: { [key: string]: any } = {
     skip: 8 + (page - 1) * limit, // Calculate skip based on page number
     limit: limit,
     // fields: "title,images,creation_date,department,culture,technique,creators",
     has_image: 1,
   };
+
+  if (query) {
+    params["q"] = query;
+  }
 
   return axios.get(url, { params });
 };
