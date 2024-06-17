@@ -1,6 +1,11 @@
 import axios from "axios";
 
-export const fetchClevelandApiData = (page: number, query?: string) => {
+export const fetchClevelandApiData = (
+  page: number,
+  query?: string,
+  filter?: string,
+  sort?: string
+) => {
   const url = "https://openaccess-api.clevelandart.org/api/artworks";
   const limit = 12;
   const params: { [key: string]: any } = {
@@ -10,8 +15,10 @@ export const fetchClevelandApiData = (page: number, query?: string) => {
     has_image: 1,
   };
 
-  if (query) {
+  if (query || filter || sort) {
     params["q"] = query;
+    params["department"] = filter;
+    // params["sort"] = sort;
   }
 
   return axios.get(url, { params });
