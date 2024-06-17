@@ -224,6 +224,11 @@ const ArtList = () => {
           </Col>
         ))}
       </Row>
+      {isLoading && (
+        <div className="d-flex justify-content-center m-2">
+          <Spinner animation="border" />
+        </div>
+      )}
       {isLoading && <h3>Loading data...</h3>}
       {artData.length > 0 && (
         <Row className="justify-content-center m-4">
