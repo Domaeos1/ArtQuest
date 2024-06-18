@@ -13,16 +13,16 @@ import { fetchChicagoApiData } from "../utils/fetchApiData";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
 interface Artwork {
+  id: string;
   title: string;
-  creation_date: string;
-  department: string;
-  culture: string;
-  technique: string;
-  creators: { description: string }[];
-  images: { web: { url: string } };
+  date_start: number;
+  image_id: string;
+  date_display: string;
+  department_title: string;
+  place_of_origin: string;
+  artist_display: string;
+  api_link: string;
   description: string;
-  url: string;
-  sortable_date: Number;
 }
 
 const ChicagoArtList = () => {
@@ -229,7 +229,10 @@ const ChicagoArtList = () => {
               />
 
               <Card.Body>
-                <Link className="text-decoration-none" to={artwork.url}>
+                <Link
+                  className="text-decoration-none"
+                  to={`https://www.artic.edu/artworks/${artwork.id}`}
+                >
                   <Card.Title>{artwork.title}</Card.Title>
                 </Link>
                 <Card.Text>
