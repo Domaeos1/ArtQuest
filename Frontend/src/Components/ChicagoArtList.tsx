@@ -110,6 +110,8 @@ const ChicagoArtList = () => {
     fetchArtData(currentPage, searchTerm);
   };
 
+  console.log(artData);
+
   return (
     <Container className="mt-4">
       <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
@@ -206,13 +208,14 @@ const ChicagoArtList = () => {
             <Card>
               <Card.Img
                 variant="top"
-                src={
-                  `https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg` ||
-                  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png"
+                src={`https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg`}
+                onError={(e) =>
+                  (e.currentTarget.src =
+                    "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png?20210219185637")
                 }
-                // alt={artwork.thumbnail.alt_text||""}
                 style={{ maxHeight: "500px", objectFit: "cover" }}
               />
+
               <Card.Body>
                 <Link className="text-decoration-none" to={artwork.url}>
                   <Card.Title>{artwork.title}</Card.Title>
