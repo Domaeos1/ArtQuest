@@ -48,7 +48,18 @@ const ChicagoArtList = () => {
         sortBy
       );
       const data = response.data.data;
-      setArtData((prevData) => (page === 1 ? data : [...prevData, ...data]));
+
+      const result = await Promise.all(
+        data.map(async (artwork: Artwork) => {
+          const response = await fetch(artwork.api_link);
+          const result = await response.json();
+          return result.data;
+        })
+      );
+
+      setArtData((prevData) =>
+        page === 1 ? result : [...prevData, ...result]
+      );
     } catch (error) {
       console.error("Error fetching artwork data", error);
     } finally {
@@ -64,31 +75,10 @@ const ChicagoArtList = () => {
     setCurrentPage((prevPage) => prevPage + 1);
   };
 
-  const handleSearch = async (page: number) => {
+  const handleSearch = () => {
     setCurrentPage(1);
-    setIsLoading(true);
     try {
-      const response = await fetchChicagoApiData(
-        page,
-        searchTerm,
-        filterTerm,
-        sortBy
-      );
-      const data = response.data.data;
-
-      // Use Promise.all to wait for all promises to be resolved
-      const result = await Promise.all(
-        data.map(async (artwork: Artwork) => {
-          const response = await fetch(artwork.api_link);
-          const result = await response.json();
-          return result.data;
-        })
-      );
-      console.log(result);
-      setArtData(result);
-
-      // setArtData(result);
-      setIsLoading(false);
+      fetchArtData(currentPage, searchTerm);
     } catch (error) {
       console.error("Error fetching detailed artwork data", error);
     }
@@ -128,7 +118,7 @@ const ChicagoArtList = () => {
       <Form
         onSubmit={(e) => {
           e.preventDefault();
-          handleSearch(currentPage);
+          handleSearch();
         }}
       >
         <Row className="justify-content-center">
@@ -210,17 +200,16 @@ const ChicagoArtList = () => {
         </div>
       )}
 
-      {/* {filterTerm && !isLoading && (
-        <h5 className="mt-4 text-center">Viewing "{filterTerm}" artworks</h5>
-      )} */}
-
       <Row className="mt-4">
         {artData.map((artwork: Artwork, index) => (
           <Col key={index} sm={6} md={6} lg={6} className="mb-4">
             <Card>
               <Card.Img
                 variant="top"
-                src={`https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg`}
+                src={
+                  `https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg` ||
+                  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1200px-No-Image-Placeholder.svg.png"
+                }
                 // alt={artwork.thumbnail.alt_text||""}
                 style={{ maxHeight: "500px", objectFit: "cover" }}
               />
@@ -236,11 +225,11 @@ const ChicagoArtList = () => {
                   {/* <strong>Technique:</strong> {artwork.technique} <br /> */}
                   <strong>Creator: </strong>
                   {artwork.artist_display}
-                  <Card.Text
-                    className="mt-2"
-                    dangerouslySetInnerHTML={{ __html: artwork.description }}
-                  />
                 </Card.Text>
+                <Card.Text
+                  className="mt-2"
+                  dangerouslySetInnerHTML={{ __html: artwork.description }}
+                />
                 <Row>
                   <Col>
                     <Button variant="secondary">Add to Collection</Button>{" "}
@@ -252,7 +241,7 @@ const ChicagoArtList = () => {
           </Col>
         ))}
       </Row>
-      {isLoading && (
+      {isLoading && artData.length > 0 && (
         <div className="d-flex justify-content-center m-2">
           <Spinner animation="border" />
         </div>

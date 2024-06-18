@@ -9,16 +9,14 @@ export const fetchClevelandApiData = (
   const url = "https://openaccess-api.clevelandart.org/api/artworks";
   const limit = 12;
   const params: { [key: string]: any } = {
-    skip: 8 + (page - 1) * limit, // Calculate skip based on page number
+    skip: 8 + (page - 1) * limit,
     limit: limit,
-    // fields: "title,images,creation_date,department,culture,technique,creators",
     has_image: 1,
   };
 
   if (query || filter || sort) {
     params["q"] = query;
     params["department"] = filter;
-    // params["sort"] = sort;
   }
 
   return axios.get(url, { params });
@@ -30,47 +28,17 @@ export const fetchChicagoApiData = (
   filter?: string,
   sort?: string
 ) => {
-  const url = query
-    ? "https://api.artic.edu/api/v1/artworks/search"
-    : "https://api.artic.edu/api/v1/artworks";
-  const limit = 12;
+  const url = "https://api.artic.edu/api/v1/artworks/search";
   const params: { [key: string]: any } = {
     page: page,
-    limit: limit,
+    limit: query ? 40 : 12,
+    has_not_been_viewed_much: false,
   };
 
   if (query || filter || sort) {
     params["q"] = query;
     params["department"] = filter;
-    // params["sort"] = sort;
   }
 
   return axios.get(url, { params });
 };
-
-// Call the function to print the results
-
-// .then((resp) => {
-//   for (const artwork of resp.data.data) {
-//     const title = artwork.title;
-//     const creationDate = artwork.creation_date;
-//     const department = artwork.department;
-//     const culture = artwork.culture;
-//     const technique = artwork.technique;
-//     const creators = artwork.creators
-//       .map((creator) => creator.description)
-//       .join(", ");
-//     const imageUrl = artwork.images.web.url;
-
-//     console.log(`Title: ${title}`);
-//     console.log(`Creation Date: ${creationDate}`);
-//     console.log(`Department: ${department}`);
-//     console.log(`Culture: ${culture}`);
-//     console.log(`Technique: ${technique}`);
-//     console.log(`Creators: ${creators}`);
-//     console.log(`Image URL: ${imageUrl}\n---`);
-//   }
-// })
-// .catch((e) => {
-//   console.log("ERROR getting artwork data");
-//   console.log(e);
