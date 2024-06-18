@@ -68,7 +68,7 @@ const ChicagoArtList = () => {
   };
 
   useEffect(() => {
-    fetchArtData(currentPage, searchTerm);
+    fetchArtData(currentPage, searchTerm, filterTerm, sortBy);
   }, [currentPage]);
 
   const handleLoadMore = () => {
@@ -84,22 +84,33 @@ const ChicagoArtList = () => {
     }
   };
 
-  const handleFilterClick = (filter: string) => {
+  const handleFilterClick = async (filter: string) => {
     setSearchTerm("");
-    setCurrentPage(1);
     setFilterTerm(filter);
-    fetchArtData(currentPage, "", filter);
+    setSortBy("");
+    setIsLoading(true);
+    const response = await fetchChicagoApiData(1, "", filter);
+    const data = response.data.data.filter(
+      (artwork: Artwork) => artwork.department_title === filter
+    );
+    setArtData(data);
+    setIsLoading(false);
+    console.log(artData);
   };
 
   const handleSortClick = (sort: string) => {
     setCurrentPage(1);
     setSortBy(sort);
-    if (sort === "Oldest first") {
-      artData.sort((a: any, b: any) => a.sortable_date - b.sortable_date);
-    } else {
-      artData.sort((a: any, b: any) => b.sortable_date - a.sortable_date);
-      console.log(artData);
-    }
+
+    setArtData((prevData) => {
+      const sortedData = [...prevData]; // Create a copy of the previous data
+      if (sort === "Oldest first") {
+        sortedData.sort((a, b) => a.date_start - b.date_start);
+      } else {
+        sortedData.sort((a, b) => b.date_start - a.date_start);
+      }
+      return sortedData;
+    });
   };
 
   const handleReset = () => {
@@ -110,12 +121,12 @@ const ChicagoArtList = () => {
     fetchArtData(currentPage, searchTerm);
   };
 
-  console.log(artData);
+  // console.log(artData);
 
   return (
     <Container className="mt-4">
       <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
-        Art Institue of Chicago{" "}
+        Art Institute of Chicago{" "}
       </h1>
       <Form
         onSubmit={(e) => {
@@ -141,41 +152,42 @@ const ChicagoArtList = () => {
 
       <div className="mt-2 d-flex gap-2 align-items-center">
         <Dropdown className="mt-2">
-          <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+          <Dropdown.Toggle
+            variant={filterTerm ? "success" : "secondary"}
+            id="dropdown-basic"
+          >
             {filterTerm || "Filter by department"}
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item onClick={() => handleFilterClick("African Art")}>
-              African Art
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => handleFilterClick("Chinese Art")}>
-              Chinese Art
+            <Dropdown.Item
+              onClick={() => handleFilterClick("Prints and Drawings")}
+            >
+              Prints and Drawings
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() =>
-                handleFilterClick("Egyptian and Ancient Near Eastern Art")
+                handleFilterClick("Painting and Sculpture of Europe")
               }
             >
-              Egyptian and Ancient Near Eastern Art
+              Painting and Sculpture of Europe
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => handleFilterClick("Arts of Asia")}>
+              Arts of Asia
             </Dropdown.Item>
             <Dropdown.Item
-              onClick={() =>
-                handleFilterClick("European Painting and Sculpture")
-              }
+              onClick={() => handleFilterClick("Photography and Media")}
             >
-              European Painting and Sculpture
-            </Dropdown.Item>
-            <Dropdown.Item
-              onClick={() => handleFilterClick("Decorative Art and Design")}
-            >
-              Decorative Art and Design
+              Photography and Media
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
         <Dropdown className="mt-2">
-          <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+          <Dropdown.Toggle
+            variant={sortBy ? "success" : "secondary"}
+            id="dropdown-basic"
+          >
             {sortBy || "Sort by"}
           </Dropdown.Toggle>
 

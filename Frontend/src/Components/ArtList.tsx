@@ -119,7 +119,10 @@ const ArtList = () => {
 
       <div className="mt-2 d-flex gap-2 align-items-center">
         <Dropdown className="mt-2">
-          <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+          <Dropdown.Toggle
+            variant={filterTerm ? "success" : "secondary"}
+            id="dropdown-basic"
+          >
             {filterTerm || "Filter by department"}
           </Dropdown.Toggle>
 
@@ -153,7 +156,10 @@ const ArtList = () => {
         </Dropdown>
 
         <Dropdown className="mt-2">
-          <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+          <Dropdown.Toggle
+            variant={sortBy ? "success" : "secondary"}
+            id="dropdown-basic"
+          >
             {sortBy || "Sort by"}
           </Dropdown.Toggle>
 
@@ -224,7 +230,7 @@ const ArtList = () => {
           </Col>
         ))}
       </Row>
-      {isLoading && (
+      {isLoading && artData.length > 0 && (
         <div className="d-flex justify-content-center m-2">
           <Spinner animation="border" />
         </div>
