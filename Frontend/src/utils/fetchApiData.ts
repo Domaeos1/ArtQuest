@@ -24,6 +24,30 @@ export const fetchClevelandApiData = (
   return axios.get(url, { params });
 };
 
+export const fetchChicagoApiData = (
+  page: number,
+  query?: string,
+  filter?: string,
+  sort?: string
+) => {
+  const url = query
+    ? "https://api.artic.edu/api/v1/artworks/search"
+    : "https://api.artic.edu/api/v1/artworks";
+  const limit = 12;
+  const params: { [key: string]: any } = {
+    page: page,
+    limit: limit,
+  };
+
+  if (query || filter || sort) {
+    params["q"] = query;
+    params["department"] = filter;
+    // params["sort"] = sort;
+  }
+
+  return axios.get(url, { params });
+};
+
 // Call the function to print the results
 
 // .then((resp) => {
