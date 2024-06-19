@@ -11,9 +11,13 @@ import {
 } from "react-bootstrap";
 import { fetchChicagoApiData } from "../utils/fetchApiData";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import {
+  getCollectionsFromLocalStorage,
+  setCollectionsToLocalStorage,
+} from "../utils/collectionsStorage";
 
 interface Artwork {
-  id: string;
+  id: number;
   title: string;
   date_start: number;
   image_id: string;
@@ -32,6 +36,9 @@ const ChicagoArtList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [filterTerm, setFilterTerm] = useState("");
   const [sortBy, setSortBy] = useState("");
+  const [addedArtworks, setAddedArtworks] = useState(
+    getCollectionsFromLocalStorage()
+  );
 
   const fetchArtData = async (
     page: number,
@@ -121,7 +128,26 @@ const ChicagoArtList = () => {
     fetchArtData(currentPage, searchTerm);
   };
 
-  // console.log(artData);
+  const handleAddToCollection = (artwork: Artwork) => {
+    const newArtwork = {
+      id: artwork.id,
+      title: artwork.title,
+      description: artwork.description,
+      artist: artwork.artist_display,
+      origin: artwork.place_of_origin,
+      department: artwork.department_title,
+      url: artwork.api_link,
+      image_src: `https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg`,
+      created_at: artwork.date_display,
+    };
+    const currentCollections = getCollectionsFromLocalStorage();
+
+    if (!currentCollections.some((item) => item.id === artwork.id)) {
+      const updatedCollections = [...currentCollections, newArtwork];
+      setCollectionsToLocalStorage(updatedCollections);
+      setAddedArtworks(updatedCollections);
+    }
+  };
 
   return (
     <Container className="mt-4">
@@ -240,7 +266,6 @@ const ChicagoArtList = () => {
                   <strong>Department:</strong> {artwork.department_title} <br />
                   <strong>Place of origin:</strong> {artwork.place_of_origin}{" "}
                   <br />
-                  {/* <strong>Technique:</strong> {artwork.technique} <br /> */}
                   <strong>Creator: </strong>
                   {artwork.artist_display}
                 </Card.Text>
@@ -248,12 +273,21 @@ const ChicagoArtList = () => {
                   className="mt-2"
                   dangerouslySetInnerHTML={{ __html: artwork.description }}
                 />
-                <Row>
-                  <Col>
-                    <Button variant="secondary">Add to Collection</Button>{" "}
-                    <Button variant="secondary">Add to Exhibition</Button>
-                  </Col>
-                </Row>
+                <Col className="d-flex gap-2">
+                  <Button
+                    onClick={() => handleAddToCollection(artwork)}
+                    variant={
+                      addedArtworks.some((item) => item.id === artwork.id)
+                        ? "success"
+                        : "secondary"
+                    }
+                  >
+                    {addedArtworks.some((item) => item.id === artwork.id)
+                      ? "Added to Collections"
+                      : "Add to Collection"}
+                  </Button>
+                  <Button variant="secondary">Add to Exhibition</Button>
+                </Col>
               </Card.Body>
             </Card>
           </Col>
