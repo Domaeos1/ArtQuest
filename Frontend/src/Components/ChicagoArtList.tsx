@@ -136,7 +136,7 @@ const ChicagoArtList = () => {
       artist: artwork.artist_display,
       origin: artwork.place_of_origin,
       department: artwork.department_title,
-      url: artwork.api_link,
+      url: `https://www.artic.edu/artworks/${artwork.id}`,
       image_src: `https://www.artic.edu/iiif/2/${artwork.image_id}/full/843,/0/default.jpg`,
       created_at: artwork.date_display,
     };
@@ -321,4 +321,3 @@ const ChicagoArtList = () => {
 };
 
 export default ChicagoArtList;
-

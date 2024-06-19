@@ -215,10 +215,6 @@ const ArtList = () => {
         </div>
       )}
 
-      {/* {filterTerm && !isLoading && (
-        <h5 className="mt-4 text-center">Viewing "{filterTerm}" artworks</h5>
-      )} */}
-
       <Row className="mt-4">
         {artData.map((artwork: Artwork, index) => (
           <Col key={index} sm={6} md={6} lg={6} className="mb-4">
