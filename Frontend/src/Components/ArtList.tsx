@@ -11,8 +11,13 @@ import {
 } from "react-bootstrap";
 import { fetchClevelandApiData } from "../utils/fetchApiData";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import {
+  getCollectionsFromLocalStorage,
+  setCollectionsToLocalStorage,
+} from "../utils/collectionsStorage";
 
 interface Artwork {
+  id: number;
   title: string;
   creation_date: string;
   department: string;
@@ -32,6 +37,9 @@ const ArtList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [filterTerm, setFilterTerm] = useState("");
   const [sortBy, setSortBy] = useState("");
+  const [addedArtworks, setAddedArtworks] = useState(
+    getCollectionsFromLocalStorage()
+  );
 
   const fetchArtData = async (
     page: number,
@@ -93,6 +101,27 @@ const ArtList = () => {
     setFilterTerm("");
     setSortBy("");
     fetchArtData(currentPage, searchTerm);
+  };
+
+  const handleAddToCollection = (artwork: Artwork) => {
+    const newArtwork = {
+      id: artwork.id,
+      title: artwork.title,
+      description: artwork.description,
+      artist: artwork.creators.map((creator) => creator.description).join(", "),
+      origin: artwork.culture,
+      department: artwork.department,
+      url: artwork.url,
+      image_src: artwork.images.web.url,
+      created_at: artwork.creation_date,
+    };
+    const currentCollections = getCollectionsFromLocalStorage();
+
+    if (!currentCollections.some((item) => item.id === artwork.id)) {
+      const updatedCollections = [...currentCollections, newArtwork];
+      setCollectionsToLocalStorage(updatedCollections);
+      setAddedArtworks(updatedCollections);
+    }
   };
 
   return (
@@ -219,12 +248,21 @@ const ArtList = () => {
                     dangerouslySetInnerHTML={{ __html: artwork.description }}
                   />
                 </Card.Text>
-                <Row>
-                  <Col>
-                    <Button variant="secondary">Add to Collection</Button>{" "}
-                    <Button variant="secondary">Add to Exhibition</Button>
-                  </Col>
-                </Row>
+                <Col className="d-flex gap-2">
+                  <Button
+                    onClick={() => handleAddToCollection(artwork)}
+                    variant={
+                      addedArtworks.some((item) => item.id === artwork.id)
+                        ? "success"
+                        : "secondary"
+                    }
+                  >
+                    {addedArtworks.some((item) => item.id === artwork.id)
+                      ? "Added to Collections"
+                      : "Add to Collection"}
+                  </Button>
+                  <Button variant="secondary">Add to Exhibition</Button>
+                </Col>
               </Card.Body>
             </Card>
           </Col>

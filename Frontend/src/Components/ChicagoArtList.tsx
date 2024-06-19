@@ -321,3 +321,4 @@ const ChicagoArtList = () => {
 };
 
 export default ChicagoArtList;
+
